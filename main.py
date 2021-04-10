@@ -3,7 +3,7 @@ from twilio import twiml
 
 app = Flask(__name__)
 
-@app.route("/sms", methods=['GET', 'POST'])
+@app.route("/", methods=['GET', 'POST'])
 def incoming_sms():
     """Send a dynamic reply to an incoming text message"""
     # Get the message the user sent our Twilio number
@@ -20,5 +20,5 @@ def incoming_sms():
 
     return str(resp)
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
