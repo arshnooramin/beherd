@@ -17,8 +17,10 @@ def incoming_sms():
         resp.message("Hi!")
     elif body == 'bye':
         resp.message("Goodbye")
+    
+    print(str(resp))
 
-    return str(resp)
+    return "<h1>Welcome to CodingX</h1>"
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
