@@ -1,0 +1,14 @@
+.sos {
+    width: 300px;
+    height: 300px;
+    border-radius: 100%;
+    font-size: 2rem;
+    font-weight: 600;
+    background-color: red;
+    color: white;
+    border: none;
+}
+
+.sos:hover {
+    background-color: green;
+}

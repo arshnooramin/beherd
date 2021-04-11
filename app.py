@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, request, redirect
+from flask import Flask, render_template, flash, request, redirect, session
 from twilio.rest import Client
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from twilio.twiml.messaging_response import MessagingResponse
@@ -12,37 +12,24 @@ client = Client(account_sid, auth_token)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 
-name = "Undefined"
-msg = "You have been reached out!"
-ph_1 = "+14759991429"
-ph_2 = '+19293889573'
-
 class MainForm(Form):
+    code_f = StringField('Codeword')
     name_f = StringField('Name')
-    msg_f = StringField('Message to Send')
+    msg_f = TextAreaField('Message to Send')
     ph_1_f = StringField('Designated Contact #1')
     ph_2_f = StringField('Designated Contact #2')
     submit = SubmitField('Save')
 
 @app.route("/", methods=['GET', 'POST'])
-def hello():
+def get_data():
     form = MainForm(request.form)
 
-    # print(form.errors)
-
     if request.method == 'POST':
-        name=form.name_f.data
-        msg=form.msg_f.data
-        ph_1=form.ph_1_f.data
-        ph_2=form.ph_2_f.data
-
-        print(name,msg,ph_1,ph_2)
-
-    # if form.validate():
-    #     # Save the comment here.
-    #     print("Done")
-    # else:
-    #     flash('All the form fields are required. ')
+        session['code'] = request.form['code_f']
+        session['name'] = request.form['name_f']
+        session['msg'] = request.form['msg_f']
+        session['ph_1'] = request.form['ph_1_f']
+        session['ph_2'] = request.form['ph_2_f']
 
     return render_template('hello.html', form=form)
 
@@ -56,22 +43,25 @@ def incoming_sms():
     resp = MessagingResponse()
 
     # Determine the right reply for this message
-    if body.lower() == 'hello':
-        resp.message("Your designated contacts have been reached!")
-        msg_1 = client.messages \
-                .create(
-                        body=msg,
-                        from_='+15707019176',
-                        to=ph_1
-                    )
-        msg_2 = client.messages \
-                .create(
-                        body=msg,
-                        from_='+15707019176',
-                        to=ph_2
-                    )
+    if body.lower() == session['code']:
+        resp.message("[BeHerd]: Your designated contacts have been reached!")
+        send_msg()
 
     return str(resp)
+
+def send_msg():
+    msg_1 = client.messages \
+        .create(
+                body="[BeHerd]: " + session['msg'] + " -" + session['name'],
+                from_='+15707019176',
+                to=session['ph_1']
+            )
+    msg_2 = client.messages \
+        .create(
+                body="[BeHerd]: " + session['msg'] + " -" + session['name'],
+                from_='+15707019176',
+                to=session['ph_2']
+            )
 
 if __name__ == "__main__":
     app.run(debug=True)
