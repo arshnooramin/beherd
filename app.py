@@ -21,6 +21,7 @@ db = SQLAlchemy(app)
 class Profile(db.Model):
     # __tablename__ = "profile"
 
+    _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     code = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
 
