@@ -19,15 +19,24 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class Profile(db.Model):
-    # __tablename__ = "profile"
+    __tablename__ = "profile"
 
     _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    code = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
+    code = db.Column(db.String(100), nullable=False)
+    msg = db.Column(db.Text, nullable=False)
+    ph_1 = db.Column(db.String(30), nullable=False)
+    ph_2 = db.Column(db.String(30), nullable=False)
 
-    def __init__(self, code, name):
+    def __init__(self, name, code, msg, ph_1, ph_2):
         self.name = name
         self.code = code
+        self.msg = msg
+        self.ph_1 = ph_1
+        self.ph_2 = ph_2
+    
+    def __repr__(self):
+        return '<Profile %r>' % self.name
 
 class MainForm(Form):
     code_f = StringField('Codeword')
@@ -42,7 +51,8 @@ def get_data():
     form = MainForm(request.form)
 
     if request.method == 'POST':
-        data = Profile(request.form['code_f'], request.form['name_f'])
+        data = Profile(request.form['name_f'], request.form['code_f'], \
+            request.form['msg_f'], request.form['ph_1_f'], request.form['ph_2_f'])
         db.session.add(data)
         db.session.commit()
         # session['code'] = request.form['code_f']
@@ -55,9 +65,7 @@ def get_data():
 
 @app.route("/sms", methods=['GET', 'POST'])
 def incoming_sms():
-
-    print(Profile.query.all(), file=sys.stderr)
-
+    
     """Send a dynamic reply to an incoming text message"""
     # Get the message the user sent our Twilio number
     body = str(request.values.get('Body', None))
@@ -65,24 +73,32 @@ def incoming_sms():
     # Start our TwiML response
     resp = MessagingResponse()
 
-    # Determine the right reply for this message
-    if body.lower() == session['code']:
-        resp.message("[BeHerd]: Your designated contacts have been reached!")
-        msg_1 = client.messages \
-        .create(
-                body="[BeHerd]: " + session['msg'] + " -" + session['name'],
-                from_='+15707019176',
-                to=session['ph_1']
-            )
-        msg_2 = client.messages \
-        .create(
-                body="[BeHerd]: " + session['msg'] + " -" + session['name'],
-                from_='+15707019176',
-                to=session['ph_2']
-            )
+    profile = Profile.query.all()
 
+    if len(profile) > 0:
+        p = profile[-1]
+        print(p.name, p.code, p.ph_1)
+
+        # Determine the right reply for this message
+        if body.lower() == p.code:
+            resp.message("[BeHerd]: Your designated contacts have been reached!")
+            msg_1 = client.messages \
+            .create(
+                    body="[BeHerd]: " + p.msg + " -" + p.name,
+                    from_='+15707019176',
+                    to=p.ph_1
+                )
+            msg_2 = client.messages \
+            .create(
+                    body="[BeHerd]: " + p.msg + " -" + p.name,
+                    from_='+15707019176',
+                    to=p.ph_2
+                )
+        else:
+            resp.message("[BeHerd]: Codeword not found! Please set one up at https://be-herd-bucknell.herokuapp.com/")
+        
     return str(resp)
-
+    
 # def send_msg():
 #     msg_1 = client.messages \
 #         .create(
