@@ -19,7 +19,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class Profile(db.Model):
-    __tablename__ = "profile"
+    # __tablename__ = "profile"
 
     code = db.Column(db.String(100), nullable=False)
     name = db.Column(db.String(100), nullable=False)
