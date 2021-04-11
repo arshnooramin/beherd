@@ -45,7 +45,18 @@ def incoming_sms():
     # Determine the right reply for this message
     if body.lower() == session['code']:
         resp.message("[BeHerd]: Your designated contacts have been reached!")
-        send_msg()
+        msg_1 = client.messages \
+        .create(
+                body="[BeHerd]: " + session['msg'] + " -" + session['name'],
+                from_='+15707019176',
+                to=session['ph_1']
+            )
+        msg_2 = client.messages \
+        .create(
+                body="[BeHerd]: " + session['msg'] + " -" + session['name'],
+                from_='+15707019176',
+                to=session['ph_2']
+            )
 
     return str(resp)
 
