@@ -1,0 +1,23 @@
+<title>Reusable Form Demo</title>
+
+{% block content %}
+<form action="" method="post" novalidate>
+    <p>
+        {{ form.name_f.label }}<br>
+        {{ form.name_f(size=32) }}
+    </p>
+    <p>
+        {{ form.msg_f.label }}<br>
+        {{ form.msg_f(size=32) }}
+    </p>
+    <p>
+        {{ form.ph_1_f.label }}<br>
+        {{ form.ph_1_f(size=32) }}
+    </p>
+    <p>
+        {{ form.ph_2_f.label }}<br>
+        {{ form.ph_2_f(size=32) }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}
