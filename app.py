@@ -1,32 +1,26 @@
-from flask import Flask
-app= Flask(__name__)
-@app.route('/')
-def index():
-  return "<h1>Welcome to CodingX</h1>"
+from flask import Flask, request, redirect
+from twilio import twiml
 
-# from flask import Flask, request, redirect
-# from twilio import twiml
+app = Flask(__name__)
 
-# app = Flask(__name__)
+@app.route("/sms", methods=['GET', 'POST'])
+def incoming_sms():
+    """Send a dynamic reply to an incoming text message"""
+    # Get the message the user sent our Twilio number
+    body = request.values.get('Body', None)
 
-# @app.route("/", methods=['GET', 'POST'])
-# def incoming_sms():
-#     """Send a dynamic reply to an incoming text message"""
-#     # Get the message the user sent our Twilio number
-#     body = request.values.get('Body', None)
+    # Start our TwiML response
+    resp = twiml.Response()
 
-#     # Start our TwiML response
-#     resp = twiml.Response()
-
-#     # Determine the right reply for this message
-#     if body == 'hello':
-#         resp.message("Hi!")
-#     elif body == 'bye':
-#         resp.message("Goodbye")
+    # Determine the right reply for this message
+    if body == 'hello':
+        resp.message("Hi!")
+    elif body == 'bye':
+        resp.message("Goodbye")
     
-#     print(str(resp))
+    print(str(resp))
 
-#     return "<h1>Welcome to CodingX</h1>"
+    return "<h1>Welcome to CodingX</h1>"
 
 if __name__ == "__main__":
     app.run(debug=True)
