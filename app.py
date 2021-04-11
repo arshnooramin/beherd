@@ -40,13 +40,36 @@ class Profile(db.Model):
 
 class MainForm(Form):
     code_f = StringField('Codeword')
-    name_f = StringField('Name')
+    name_f = StringField('Your Name')
     msg_f = TextAreaField('Message to Send')
     ph_1_f = StringField('Designated Contact #1')
     ph_2_f = StringField('Designated Contact #2')
     submit = SubmitField('Save')
 
 @app.route("/", methods=['GET', 'POST'])
+def home_view():
+    if request.method == 'POST':
+        profile = Profile.query.all()
+
+        if len(profile) > 0:
+            p = profile[-1]
+            print(p.name, p.code, p.ph_1, p.ph_2)
+            
+            msg_1 = client.messages \
+            .create(
+                    body="[BeHerd]: " + p.msg + " - " + p.name,
+                    from_='+15707019176',
+                    to=p.ph_1
+                )
+            msg_2 = client.messages \
+            .create(
+                    body="[BeHerd]: " + p.msg + " - " + p.name,
+                    from_='+15707019176',
+                    to=p.ph_2
+                )
+    return render_template('home.html')
+
+@app.route("/preset", methods=['GET', 'POST'])
 def get_data():
     form = MainForm(request.form)
 
@@ -55,13 +78,8 @@ def get_data():
             request.form['msg_f'], request.form['ph_1_f'], request.form['ph_2_f'])
         db.session.add(data)
         db.session.commit()
-        # session['code'] = request.form['code_f']
-        # session['name'] = request.form['name_f']
-        # session['msg'] = request.form['msg_f']
-        # session['ph_1'] = request.form['ph_1_f']
-        # session['ph_2'] = request.form['ph_2_f']
 
-    return render_template('hello.html', form=form)
+    return render_template('preset.html', form=form)
 
 @app.route("/sms", methods=['GET', 'POST'])
 def incoming_sms():
@@ -77,20 +95,20 @@ def incoming_sms():
 
     if len(profile) > 0:
         p = profile[-1]
-        print(p.name, p.code, p.ph_1)
+        print(p.name, p.code, p.ph_1, p.ph_2)
 
         # Determine the right reply for this message
         if body.lower() == p.code:
             resp.message("[BeHerd]: Your designated contacts have been reached!")
             msg_1 = client.messages \
             .create(
-                    body="[BeHerd]: " + p.msg + " -" + p.name,
+                    body="[BeHerd]: " + p.msg + " - " + p.name,
                     from_='+15707019176',
                     to=p.ph_1
                 )
             msg_2 = client.messages \
             .create(
-                    body="[BeHerd]: " + p.msg + " -" + p.name,
+                    body="[BeHerd]: " + p.msg + " - " + p.name,
                     from_='+15707019176',
                     to=p.ph_2
                 )
@@ -98,20 +116,6 @@ def incoming_sms():
             resp.message("[BeHerd]: Codeword not found! Please set one up at https://be-herd-bucknell.herokuapp.com/")
         
     return str(resp)
-    
-# def send_msg():
-#     msg_1 = client.messages \
-#         .create(
-#                 body="[BeHerd]: " + session['msg'] + " -" + session['name'],
-#                 from_='+15707019176',
-#                 to=session['ph_1']
-#             )
-#     msg_2 = client.messages \
-#         .create(
-#                 body="[BeHerd]: " + session['msg'] + " -" + session['name'],
-#                 from_='+15707019176',
-#                 to=session['ph_2']
-#             )
 
 if __name__ == "__main__":
     app.run(debug=True)

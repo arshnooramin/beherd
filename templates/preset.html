@@ -1,7 +1,11 @@
-<title>Reusable Form Demo</title>
+{% extends "base.html" %}
+{% block title %}Change the Preset{% endblock %}
 
 {% block content %}
-<form action="" method="post" novalidate>
+<h1 class="text-left"><span style="color:orange;">Be</span><span style="color:blue;">Herd</span></h1>
+<h3 class="text-left">Change Presets</h3>
+<a href="/"><button class="btn btn-primary mt-3">Go Back</button></a>
+<form class="my-4" action="" method="post" novalidate>
     <p>
         {{ form.name_f.label }}<br>
         {{ form.name_f(size=32) }}

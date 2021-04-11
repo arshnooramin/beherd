@@ -5,12 +5,12 @@
     font-size: 2rem;
     font-weight: 600;
     background-color: red;
-    color: white;
+    color: white !important;
     border: none;
+    transition: 0.3s;
+    outline: none !important;
 }
 
-.sos:hover,
-.sos:focus,
-.sos:active {
+.sos:hover {
     background-color: green;
 }
