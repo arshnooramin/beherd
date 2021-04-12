@@ -7,12 +7,12 @@ import sys
 
 app = Flask(__name__)
 
-account_sid = os.environ.get('account_sid')
-auth_token = os.environ.get('auth_token')
+account_sid = "AC3f0ad074e24c894cbde99008b467d1ba"
+auth_token = "713e182e9a5a8b70a64cc42bbd609d3e"
 client = Client(account_sid, auth_token)
 
 app.config.from_object(__name__)
-app.config['SECRET_KEY'] = os.environ.get('secret_key')
+app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://lsnznlhrwoydof:202f3c0a5ed662ce7672ca9d8f8fdc82f802fbb50b557fedb81ebf67faf9694a@ec2-35-174-35-242.compute-1.amazonaws.com:5432/dejij1924mip1"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
