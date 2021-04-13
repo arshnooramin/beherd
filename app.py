@@ -7,9 +7,11 @@ import sys
 
 app = Flask(__name__)
 
-account_sid = "AC3f0ad074e24c894cbde99008b467d1ba"
-auth_token = "713e182e9a5a8b70a64cc42bbd609d3e"
+account_sid = "AC59840972faaaf9f2eaab030aad9e6e70"
+auth_token = "5168ce207f544d5a0c82b4669c99706e"
 client = Client(account_sid, auth_token)
+
+twilio_num = '+15707019205'
 
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
@@ -58,13 +60,13 @@ def home_view():
             msg_1 = client.messages \
             .create(
                     body="[BeHerd]: " + p.msg + " - " + p.name,
-                    from_='+15707019176',
+                    from_=twilio_num,
                     to=p.ph_1
                 )
             msg_2 = client.messages \
             .create(
                     body="[BeHerd]: " + p.msg + " - " + p.name,
-                    from_='+15707019176',
+                    from_=twilio_num,
                     to=p.ph_2
                 )
     return render_template('home.html')
@@ -103,13 +105,13 @@ def incoming_sms():
             msg_1 = client.messages \
             .create(
                     body="[BeHerd]: " + p.msg + " - " + p.name,
-                    from_='+15707019176',
+                    from_=twilio_num,
                     to=p.ph_1
                 )
             msg_2 = client.messages \
             .create(
                     body="[BeHerd]: " + p.msg + " - " + p.name,
-                    from_='+15707019176',
+                    from_=twilio_num,
                     to=p.ph_2
                 )
         else:
