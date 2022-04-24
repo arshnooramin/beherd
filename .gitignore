@@ -9,3 +9,6 @@ config.env
 
 # Deployment files
 Procfile
+
+# Cache files
+__pycache__/
