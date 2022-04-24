@@ -1,32 +1,56 @@
-from flask import Flask, render_template, flash, request, redirect, session
-from twilio.rest import Client
-from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
-from twilio.twiml.messaging_response import MessagingResponse
-from flask_sqlalchemy import SQLAlchemy
-import sys
+# import the Flask module
+from flask import *
 
+# import the Twilio REST Client API
+from twilio.rest import Client
+
+# import the wtforms module
+from wtforms import Form, TextAreaField, StringField, SubmitField
+
+# import the MessagingResponse module from Twilio
+from twilio.twiml.messaging_response import MessagingResponse
+
+# import the Flask SQLAlchemy module
+from flask_sqlalchemy import SQLAlchemy
+
+# import decouple module
+from decouple import config
+
+# initiate the flask app
 app = Flask(__name__)
 
-account_sid = "AC59840972faaaf9f2eaab030aad9e6e70"
-auth_token = "5168ce207f544d5a0c82b4669c99706e"
+# get Twilio credentials from env file
+account_sid = config('ACCOUNT_SID')
+auth_token = config('AUTH_TOKEN')
+twilio_num = config('TWILIO_NUM')
+
+# initiate a Twilio client with retrieved credentials
 client = Client(account_sid, auth_token)
 
-twilio_num = '+15707019205'
-
+# initiate a config object for SQLAlchemy database
 app.config.from_object(__name__)
-app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://lsnznlhrwoydof:202f3c0a5ed662ce7672ca9d8f8fdc82f802fbb50b557fedb81ebf67faf9694a@ec2-35-174-35-242.compute-1.amazonaws.com:5432/dejij1924mip1"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# get the SQLAlchemy database credentials from env file
+app.config['SECRET_KEY'] = config('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = config('SQLALCHEMY_DATABASE_URI')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = config('SQLALCHEMY_TRACK_MODIFICATIONS', cast=bool)
+
+# initiate the SQLAlchemy database object
 db = SQLAlchemy(app)
 
-class Profile(db.Model):
-    __tablename__ = "profile"
+# Initiate a preset model/database table to store user data
+class Preset(db.Model):
+    __tablename__ = "preset"
 
+    # identifier
     _id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # name of the user
     name = db.Column(db.String(100), nullable=False)
+    # codeword used to send/initiate the emergency message
     code = db.Column(db.String(100), nullable=False)
+    # message to be sent
     msg = db.Column(db.Text, nullable=False)
+    # emergency contacts
     ph_1 = db.Column(db.String(30), nullable=False)
     ph_2 = db.Column(db.String(30), nullable=False)
 
@@ -40,6 +64,7 @@ class Profile(db.Model):
     def __repr__(self):
         return '<Profile %r>' % self.name
 
+# The main form class to update the Preset model/table
 class MainForm(Form):
     code_f = StringField('Codeword')
     name_f = StringField('Your Name')
@@ -48,75 +73,89 @@ class MainForm(Form):
     ph_2_f = StringField('Designated Contact #2')
     submit = SubmitField('Save')
 
+"""Request to be made on the home page view"""
 @app.route("/", methods=['GET', 'POST'])
 def home_view():
     if request.method == 'POST':
-        profile = Profile.query.all()
+        # extract all the data from the Preset model/table
+        preset = Preset.query.all()
 
-        if len(profile) > 0:
-            p = profile[-1]
-            print(p.name, p.code, p.ph_1, p.ph_2)
+        # if Preset model/table is not empty
+        if len(preset) > 0:
+            # get the most recent data
+            p = preset[-1]
             
-            msg_1 = client.messages \
-            .create(
-                    body="[BeHerd]: " + p.msg + " - " + p.name,
-                    from_=twilio_num,
-                    to=p.ph_1
-                )
-            msg_2 = client.messages \
-            .create(
-                    body="[BeHerd]: " + p.msg + " - " + p.name,
-                    from_=twilio_num,
-                    to=p.ph_2
-                )
+            # send message to each emergency contact
+            client.messages.create(
+                body="[BeHerd]: " + p.msg + " - " + p.name,
+                from_=twilio_num,
+                to=p.ph_1
+            )
+            client.messages.create(
+                body="[BeHerd]: " + p.msg + " - " + p.name,
+                from_=twilio_num,
+                to=p.ph_2
+            )
+    # render home.html for route -> '/'
     return render_template('home.html')
 
+"""Request to be made on the home page view"""
 @app.route("/preset", methods=['GET', 'POST'])
 def get_data():
+    # get the data from the HTML form on the webpage
     form = MainForm(request.form)
 
     if request.method == 'POST':
-        data = Profile(request.form['name_f'], request.form['code_f'], \
+        # Create a new row/entry in the Preset model/table with user entered data
+        data = Preset(request.form['name_f'], request.form['code_f'], \
             request.form['msg_f'], request.form['ph_1_f'], request.form['ph_2_f'])
         db.session.add(data)
         db.session.commit()
 
+    # render preset.html for route -> '/preset'
     return render_template('preset.html', form=form)
 
+"""Request to be made on the sms page view"""
 @app.route("/sms", methods=['GET', 'POST'])
 def incoming_sms():
-    
     """Send a dynamic reply to an incoming text message"""
-    # Get the message the user sent our Twilio number
+    # Get the message the user sent to the Twilio number
     body = str(request.values.get('Body', None))
 
     # Start our TwiML response
     resp = MessagingResponse()
 
-    profile = Profile.query.all()
+    # # extract all the data from the Preset model/table
+    preset = Preset.query.all()
 
-    if len(profile) > 0:
-        p = profile[-1]
-        print(p.name, p.code, p.ph_1, p.ph_2)
+    # if Preset model/table is not empty
+    if len(preset) > 0:
+        # get the most recent data
+        p = preset[-1]
 
-        # Determine the right reply for this message
+        # if incoming message from user corresponds to the saved codeword
         if body.lower() == p.code:
+            # notify user that the emergency contacts have been reached
             resp.message("[BeHerd]: Your designated contacts have been reached!")
-            msg_1 = client.messages \
+            
+            # send message to each emergency contact
+            client.messages \
             .create(
-                    body="[BeHerd]: " + p.msg + " - " + p.name,
-                    from_=twilio_num,
-                    to=p.ph_1
-                )
-            msg_2 = client.messages \
+                body="[BeHerd]: " + p.msg + " - " + p.name,
+                from_=twilio_num,
+                to=p.ph_1
+            )
+            client.messages \
             .create(
-                    body="[BeHerd]: " + p.msg + " - " + p.name,
-                    from_=twilio_num,
-                    to=p.ph_2
-                )
+                body="[BeHerd]: " + p.msg + " - " + p.name,
+                from_=twilio_num,
+                to=p.ph_2
+            )
+        # if incoming message did not correspond to a set codeword notify and instruct user to set one
         else:
-            resp.message("[BeHerd]: Codeword not found! Please set one up at https://be-herd-bucknell.herokuapp.com/")
-        
+            resp.message(
+                "[BeHerd]: Codeword not found! Please set one up at https://be-herd-bucknell.herokuapp.com/"
+            )   
     return str(resp)
 
 if __name__ == "__main__":

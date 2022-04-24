@@ -3,3 +3,9 @@
 
 # Virtual Environment
 venv/
+
+# Environment files
+config.env
+
+# Deployment files
+Procfile
