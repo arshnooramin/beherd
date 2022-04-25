@@ -60,7 +60,7 @@ The application has three main components: a **SQL database**, **Flask web app**
 ```
 POST https://beherd.herokuapp.com/sms
 ```
-which then calls a Python function. The function retrieves data from the database and checks whether the text that was sent was a valid codeword. If a valid codeword was found, texts are sent to the designated contacts of the user with the set message via the Twilio Python module. The messages can also be triggered using the SOS button on the web app itself.
+Which then calls a Python function. The function retrieves data from the database and checks whether the text that was sent was a valid codeword. If a valid codeword was found, texts are sent to the designated contacts of the user with the set message via the Twilio Python module. The messages can also be triggered using the SOS button on the web app itself.
 
 <img src="https://user-images.githubusercontent.com/38775985/165004942-16a8733a-6239-4d81-bfaa-56e402d57e04.png" alt="drawing"/>
 
