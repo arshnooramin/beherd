@@ -3,7 +3,7 @@
 Campus safety application powered by Twilio - [beherd.herokuapp.com](https://beherd.herokuapp.com/)
 
 ## Purpose
-Safety and comfort are backdrops for any thriving college community. BeHerd strives to push campuses to become safer by providing students a more flexible and accessible model of campus security. BeHerd allows students to control and ensure their safety from the comfort of their cell phones in a discrete and user-friendly manner.
+Safety and comfort are central to any thriving college community. BeHerd strives to push campuses to become safer by providing students a more flexible and accessible model of campus security. BeHerd allows students to control and ensure their safety from the comfort of their cell phones in a discrete and user-friendly manner.
 
 BeHerd is an award-wining ([Twilio Challenge 2021 Winner](http://management.blogs.bucknell.edu/2021/04/19/twilio-challenge-winners/)) web application built using [Flask](https://flask.palletsprojects.com/en/2.1.x/) and [Twilio API](https://www.twilio.com/).
 
