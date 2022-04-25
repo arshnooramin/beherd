@@ -1,5 +1,7 @@
 # BeHerd
 
+Campus safety application powered by Twilio - [beherd.herokuapp.com](https://beherd.herokuapp.com/)
+
 ## Purpose
 Safety and comfort are backdrops for any thriving college community. BeHerd strives to push campuses to become safer by providing students a more flexible and accessible model of campus security. BeHerd allows students to control and ensure their safety from the comfort of their cell phones in a discrete and user-friendly manner.
 
@@ -16,10 +18,31 @@ This can be accomplished by visiting the [**Change Presets** route/page](https:/
 
 <img src="https://user-images.githubusercontent.com/38775985/165001173-9f33abd8-f67f-48be-821d-78cd7cd0d874.png" alt="drawing" width="200"/> <img src="https://user-images.githubusercontent.com/38775985/165001162-a8873e5d-9601-4065-88ba-ab9db1e768b3.png" alt="drawing" width="200"/>
 
-Once a preset has been saved the emergency/designated contacts can be reached by tapping the SOS button on the [**Home** route/page](https://beherd.herokuapp.com/) of the web app
+Once a preset has been saved the emergency/designated contacts can be reached by tapping the SOS button on the [**Home** route/page](https://beherd.herokuapp.com/) on the web app
 
-<img src="https://user-images.githubusercontent.com/38775985/165001178-7de208ae-5282-4181-bde1-e52db38b56d9.png" alt="drawing" width="200"/>
+<img src="https://user-images.githubusercontent.com/38775985/165001178-7de208ae-5282-4181-bde1-e52db38b56d9.png" alt="drawing" width="200"/> <img src="https://user-images.githubusercontent.com/38775985/164998767-62369344-2747-4072-835d-3d5f301dc2dd.png" alt="drawing" width="200"/>
 
 **OR** by sending the preset codeword to the Twilio number as a text message
 
-<img src="https://user-images.githubusercontent.com/38775985/164998767-62369344-2747-4072-835d-3d5f301dc2dd.png" alt="drawing" width="200"/> <img src="https://user-images.githubusercontent.com/38775985/165001167-3112cf38-42e8-405a-977a-fada02ae485f.png" alt="drawing" width="200"/>
+<img src="https://user-images.githubusercontent.com/38775985/165001167-3112cf38-42e8-405a-977a-fada02ae485f.png" alt="drawing" width="200"/> <img src="https://user-images.githubusercontent.com/38775985/164998767-62369344-2747-4072-835d-3d5f301dc2dd.png" alt="drawing" width="200"/>
+
+## Installation
+Given below are the instructions for setting up this project locally:
+* Clone this repository
+```
+git clone git@github.com:arshnooramin/beherd.git
+cd beherd
+```
+* Create a Python virtual environment and install dependencies
+```
+pip install virtualenv
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+* Create a [Twilio Developer Account](https://www.twilio.com/try-twilio) and get API credentials
+* Set up a SQL database and get URI and secret key (can be set up locally)
+* Create an `.env` file by copying `.env.sample` and adding the database and Twilio credentials
+```
+flask run
+```
