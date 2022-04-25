@@ -5,7 +5,7 @@
 venv/
 
 # Environment files
-config.env
+.env
 
 # Deployment files
 Procfile
