@@ -1,0 +1,7 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    "error",
+    # Flask-Login 0.6.3 still calls datetime.utcnow().
+    "ignore:datetime.datetime.utcnow:DeprecationWarning:flask_login",
+]

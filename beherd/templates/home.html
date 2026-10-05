@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="home columns">
+    <div class="sos-panel">
+        <div class="status {{ 'status-ready' if preset else 'status-empty' }}">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span>
+                {% if preset %}
+                    Ready to alert {{ preset.contacts|length }} contact{{ 's' if preset.contacts|length != 1 }}
+                {% else %}
+                    No preset yet. <a href="{{ url_for('main.edit_preset') }}">Set one up</a> before you need it.
+                {% endif %}
+            </span>
+        </div>
+
+        <form method="post" action="{{ url_for('main.sos') }}" class="sos-form" data-hold-ms="1500">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="sos" {{ 'disabled' if not preset }}>
+                <svg class="sos-ring" viewBox="0 0 100 100" aria-hidden="true">
+                    <circle cx="50" cy="50" r="47" pathLength="100"></circle>
+                </svg>
+                <span class="sos-label">SOS</span>
+            </button>
+            <p class="sos-hint" aria-live="polite">Press and hold to alert your contacts</p>
+        </form>
+    </div>
+
+    {% if preset %}
+    <div class="side">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="section-label">Your alert</h2>
+                <a class="button button-ghost button-small" href="{{ url_for('main.edit_preset') }}">Edit</a>
+            </div>
+            <p class="sms-bubble">{{ preset.alert_body }}</p>
+            <ul class="contact-list">
+                {% for contact in preset.contacts %}
+                    <li>
+                        <span class="contact-name">{{ contact.name or 'Contact %d'|format(loop.index) }}</span>
+                        <span class="contact-phone">{{ contact.phone|phone }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% if config.TWILIO_NUM %}
+        <div class="card codeword">
+            <div>
+                <h2>Can't open the app?</h2>
+                <p>Text your codeword to <a href="sms:{{ config.TWILIO_NUM }}">{{ config.TWILIO_NUM|phone }}</a>.</p>
+            </div>
+            <a class="button button-secondary" href="sms:{{ config.TWILIO_NUM }}">Text</a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,8 +1,10 @@
-# Visual Studio Code Files
+# Editor files
 .vscode/
+.idea/
 
-# Virtual Environment
+# Virtual environments
 venv/
+.venv/
 
 # Environment files
 .env
@@ -10,5 +12,12 @@ venv/
 # Deployment files
 Procfile
 
+# Local databases
+instance/
+*.db
+
 # Cache files
 __pycache__/
+
+# Local notes
+.local/

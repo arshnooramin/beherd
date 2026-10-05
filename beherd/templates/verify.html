@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Enter code · BeHerd{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <h1 class="page-title">Check your texts</h1>
+    <p class="page-lede">We sent a code to {{ phone|phone }}. <a href="{{ url_for('auth.login') }}">Wrong number?</a></p>
+
+    <form method="post" class="card" novalidate>
+        {{ form.hidden_tag() }}
+        {% if config.MESSAGING_BACKEND == "console" %}
+            {{ field(form.code, "Dev mode: the code is printed in the server log.", autocomplete="one-time-code", inputmode="numeric", autofocus=true) }}
+        {% else %}
+            {{ field(form.code, autocomplete="one-time-code", inputmode="numeric", autofocus=true) }}
+        {% endif %}
+        {{ form.submit(class="button button-primary button-block") }}
+    </form>
+</div>
+{% endblock %}

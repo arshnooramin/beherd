@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="landing columns">
+    <div class="hero">
+        <h1 class="hero-title">Help, one press away.</h1>
+        <p class="page-lede">BeHerd texts up to five people you trust when you press SOS or text a secret codeword. No app to install.</p>
+        <a class="button button-primary button-block hero-cta" href="{{ url_for('auth.login') }}">Get started</a>
+    </div>
+
+    <ol class="steps">
+        <li class="card">
+            <span class="step-num">1</span>
+            <div><h2>Sign in with your phone</h2><p>We text you a code. No password to remember.</p></div>
+        </li>
+        <li class="card">
+            <span class="step-num">2</span>
+            <div><h2>Set your preset</h2><p>Your message, a codeword, and up to five emergency contacts.</p></div>
+        </li>
+        <li class="card">
+            <span class="step-num">3</span>
+            <div><h2>Raise an alert</h2><p>Hold the SOS button, or text your codeword from your phone.</p></div>
+        </li>
+    </ol>
+</section>
+{% endblock %}
