@@ -8,7 +8,10 @@ def test_landing_page_for_visitors(client):
 def test_sos_alerts_every_contact(logged_in, messenger):
     make_preset()
     resp = logged_in.post("/sos", follow_redirects=True)
-    assert messenger.sent == [(FRIEND_1, "[BeHerd] I need help - Alex"), (FRIEND_2, "[BeHerd] I need help - Alex")]
+    assert messenger.sent == [
+        (FRIEND_1, "[BeHerd] I need help - Alex"),
+        (FRIEND_2, "[BeHerd] I need help - Alex"),
+    ]
     assert "Alert sent to all 2" in resp.text
 
 

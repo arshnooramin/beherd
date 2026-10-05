@@ -17,9 +17,7 @@ def create_app(overrides: dict | None = None) -> Flask:
     app = Flask(__name__)
     app.config.from_mapping(settings_from_env())
     app.config.update(overrides or {})
-    app.config.setdefault(
-        "TWILIO_VALIDATE_SIGNATURE", app.config["MESSAGING_BACKEND"] == "twilio"
-    )
+    app.config.setdefault("TWILIO_VALIDATE_SIGNATURE", app.config["MESSAGING_BACKEND"] == "twilio")
     if not app.config["SECRET_KEY"]:
         raise RuntimeError("SECRET_KEY is not set.")
 

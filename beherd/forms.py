@@ -17,8 +17,17 @@ from beherd.phone import InvalidPhoneNumber, normalize
 
 # Twilio intercepts these words for opt-out/help handling, so they never reach the app.
 RESERVED_KEYWORDS = {
-    "cancel", "end", "help", "info", "quit", "start", "stop", "stopall",
-    "unstop", "unsubscribe", "yes",
+    "cancel",
+    "end",
+    "help",
+    "info",
+    "quit",
+    "start",
+    "stop",
+    "stopall",
+    "unstop",
+    "unsubscribe",
+    "yes",
 }
 
 
@@ -40,7 +49,10 @@ class LoginForm(FlaskForm):
 class VerifyForm(FlaskForm):
     code = StringField(
         "Verification code",
-        validators=[DataRequired(), Regexp(r"^\s*\d{4,10}\s*$", message="Enter the digits from the text.")],
+        validators=[
+            DataRequired(),
+            Regexp(r"^\s*\d{4,10}\s*$", message="Enter the digits from the text."),
+        ],
     )
     submit = SubmitField("Sign in")
 

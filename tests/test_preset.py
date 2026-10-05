@@ -50,7 +50,9 @@ def test_rejects_bad_contacts(logged_in):
     for phone, error in cases.items():
         resp = logged_in.post("/preset/edit", data=preset_form(**{"contacts-1-phone": phone}))
         assert error in resp.text, phone
-    resp = logged_in.post("/preset/edit", data=preset_form(**{"contacts-1-name": "Kim", "contacts-1-phone": ""}))
+    resp = logged_in.post(
+        "/preset/edit", data=preset_form(**{"contacts-1-name": "Kim", "contacts-1-phone": ""})
+    )
     assert "Add a phone number" in resp.text
     assert db.session.query(Preset).count() == 0
 
@@ -65,7 +67,9 @@ def test_edit_prefills_and_replaces_contacts(logged_in):
     page = logged_in.get("/preset/edit").text
     assert 'value="pineapple"' in page and 'value="(570) 555-0103"' in page
 
-    data = preset_form(codeword="mango", **{"contacts-0-phone": FRIEND_3, "contacts-1-phone": FRIEND_2})
+    data = preset_form(
+        codeword="mango", **{"contacts-0-phone": FRIEND_3, "contacts-1-phone": FRIEND_2}
+    )
     logged_in.post("/preset/edit", data=data)
     preset = db.session.query(Preset).one()
     assert preset.codeword == "mango"

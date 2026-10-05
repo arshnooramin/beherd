@@ -1,5 +1,7 @@
 # BeHerd
 
+[![CI](https://github.com/arshnooramin/beherd/actions/workflows/ci.yml/badge.svg)](https://github.com/arshnooramin/beherd/actions/workflows/ci.yml)
+
 A campus safety app that alerts your emergency contacts by SMS, either by holding an SOS button or by texting a codeword to a Twilio number. 
 
 **Winner of the [2021 Twilio Hackathon](http://management.blogs.bucknell.edu/2021/04/19/twilio-challenge-winners/).**
@@ -53,11 +55,14 @@ To receive texts, set the Twilio number's incoming-message webhook to `POST http
 
 Database tables are created on startup. There are no migrations yet; after a schema change, delete the database and let it be recreated.
 
-## Tests
+## Development
 
 ```sh
-pytest
+pytest        # run the tests
+black .       # format the code
 ```
+
+CI runs both on every push and pull request; pull requests fail if the code isn't formatted with Black.
 
 ## Project layout
 

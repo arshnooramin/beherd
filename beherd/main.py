@@ -53,8 +53,7 @@ def edit_preset():
             "codeword": preset.codeword,
             "message": preset.message,
             "contacts": [
-                {"name": c.name or "", "phone": display(c.phone, region)}
-                for c in preset.contacts
+                {"name": c.name or "", "phone": display(c.phone, region)} for c in preset.contacts
             ],
         }
     form = PresetForm(data=data, owner_phone=current_user.phone)
