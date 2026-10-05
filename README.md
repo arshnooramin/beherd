@@ -7,10 +7,10 @@ A campus safety app that alerts your emergency contacts by SMS, either by holdin
 **Winner of the [2021 Twilio Hackathon](http://management.blogs.bucknell.edu/2021/04/19/twilio-challenge-winners/).**
 
 <p>
-  <img src="docs/screenshots/landing.png" alt="Landing page" width="200">
-  <img src="docs/screenshots/home.png" alt="Home page with the SOS button" width="200">
-  <img src="docs/screenshots/preset.png" alt="Preset summary" width="200">
-  <img src="docs/screenshots/edit.png" alt="Editing a preset" width="200">
+  <img src="https://github.com/user-attachments/assets/39d4d6cd-d926-4009-b01e-16cbb9ec160d" alt="Landing page" width="200">
+  <img src="https://github.com/user-attachments/assets/a63419c5-a8c3-48fb-a68b-13672635eeb1" alt="Home page with the SOS button" width="200">
+  <img src="https://github.com/user-attachments/assets/20823f2c-268f-43ec-8cd9-0fa17fcf33d9" alt="Preset summary" width="200">
+  <img src="https://github.com/user-attachments/assets/d7edcb03-4124-48d8-9c3c-b256f13f212d" alt="Editing a preset" width="200">
 </p>
 
 ## How it works
