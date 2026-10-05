@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Edit preset · BeHerd{% endblock %}
+
+{% block content %}
+<h1 class="page-title">{{ 'Set up your preset' if is_new else 'Edit preset' }}</h1>
+<p class="page-lede">This is what gets sent when you press SOS or text your codeword.</p>
+
+<form method="post" class="preset-form" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div class="columns">
+        <div>
+            <fieldset class="card">
+                <legend>You</legend>
+                {{ field(form.name, "Signed at the end of every alert.", autocomplete="name", placeholder="Alex Rivera") }}
+                {{ field(form.codeword, "Not case-sensitive. Pick something you'd never text by accident.", autocomplete="off", autocapitalize="none", spellcheck="false", placeholder="pineapple") }}
+            </fieldset>
+
+            <fieldset class="card">
+                <legend>Message</legend>
+                {{ field(form.message, rows=3, placeholder="I don't feel safe. I'm near the library, please call me.") }}
+            </fieldset>
+        </div>
+
+        <fieldset class="card" data-contacts data-min="{{ min_contacts }}">
+            <legend>Emergency contacts <span class="legend-count" data-contact-count></span></legend>
+            {% if form.contacts_error %}
+                <p class="field-error contacts-error">{{ form.contacts_error }}</p>
+            {% endif %}
+            {% for entry in form.contacts %}
+                {% set row = entry.form %}
+                {% set show = not row.is_blank or row.phone.errors or loop.index <= min_contacts %}
+                <div class="contact-row" data-contact-row {{ 'hidden' if not show }}>
+                    <div class="contact-fields">
+                        {{ field(row.name, autocomplete="off", placeholder="Name (optional)") }}
+                        {{ field(row.phone, autocomplete="off", inputmode="tel", placeholder="(570) 555-0101") }}
+                    </div>
+                    <button type="button" class="icon-button" data-remove-contact aria-label="Remove contact" hidden>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                    </button>
+                </div>
+            {% endfor %}
+            <noscript><style>.contact-row[hidden] { display: flex !important; }</style></noscript>
+            <button type="button" class="button button-ghost add-contact" data-add-contact hidden>+ Add contact</button>
+        </fieldset>
+    </div>
+
+    <div class="form-actions">
+        {{ form.submit(class="button button-primary button-block") }}
+        {% if not is_new %}
+            <a class="button button-ghost button-block" href="{{ url_for('main.view_preset') }}">Cancel</a>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,850 @@
+:root {
+    --bg: #f6f5f2;
+    --surface: #ffffff;
+    --text: #1b1c1f;
+    --muted: #6b6e76;
+    --border: #e4e2dc;
+    --accent: #2f5bd3;
+    --accent-text: #ffffff;
+    --danger: #e5484d;
+    --danger-deep: #c62a2f;
+    --success: #2b9a66;
+    --warning: #c27a10;
+    --radius: 16px;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.04);
+    --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #121316;
+        --surface: #1c1d21;
+        --text: #ecedef;
+        --muted: #9a9ca4;
+        --border: #2c2e33;
+        --accent: #7c9cff;
+        --accent-text: #0d1020;
+        --shadow: none;
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Components set their own display, which would otherwise override [hidden]. */
+[hidden] {
+    display: none !important;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 var(--font);
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--accent);
+}
+
+h1,
+h2,
+p {
+    margin: 0;
+}
+
+.shell {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: max(16px, env(safe-area-inset-top)) 20px max(32px, env(safe-area-inset-bottom));
+}
+
+/* Header */
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    margin-bottom: 8px;
+}
+
+.wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+}
+
+.wordmark b {
+    font-weight: 750;
+}
+
+.wordmark-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--danger);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav form {
+    margin: 0;
+}
+
+.nav-link {
+    padding: 8px 14px;
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+    border-radius: 999px;
+    color: var(--text);
+    font-weight: 550;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    background: var(--surface);
+}
+
+/* Notices */
+
+.notice {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid;
+    font-weight: 500;
+}
+
+.notice-success {
+    border-color: color-mix(in srgb, var(--success) 35%, transparent);
+    background: color-mix(in srgb, var(--success) 12%, var(--surface));
+}
+
+.notice-info {
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+.notice-error {
+    border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+    background: color-mix(in srgb, var(--danger) 12%, var(--surface));
+}
+
+.notice-warning {
+    border-color: color-mix(in srgb, var(--warning) 35%, transparent);
+    background: color-mix(in srgb, var(--warning) 12%, var(--surface));
+}
+
+/* Cards and buttons */
+
+.card {
+    margin: 0 0 16px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 12px;
+    font: inherit;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.15s;
+}
+
+.button:hover {
+    filter: brightness(1.08);
+}
+
+.button:active {
+    transform: scale(0.98);
+}
+
+.button-primary {
+    background: var(--accent);
+    color: var(--accent-text);
+}
+
+.button-secondary {
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+    color: var(--accent);
+}
+
+.button-ghost {
+    background: none;
+    color: var(--accent);
+}
+
+.button-small {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 0.95rem;
+}
+
+.button-ghost:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    filter: none;
+}
+
+.card-header .button {
+    margin: -8px -12px 0 0;
+}
+
+.button-block {
+    width: 100%;
+    min-height: 52px;
+}
+
+:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 60%, transparent);
+    outline-offset: 2px;
+}
+
+/* Layout: stacked on phones, side by side on wider screens */
+
+.narrow {
+    max-width: 28rem;
+    margin: 0 auto;
+}
+
+.columns > * + * {
+    margin-top: 16px;
+}
+
+.card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.card-header .section-label {
+    margin-bottom: 12px;
+}
+
+/* Home */
+
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+}
+
+.home.columns > * + * {
+    margin-top: 0;
+}
+
+.sos-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+}
+
+.side {
+    width: 100%;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.status-dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-ready .status-dot {
+    background: var(--success);
+}
+
+.status-empty .status-dot {
+    background: var(--warning);
+}
+
+.sos-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Clears the button's halo (box-shadow) with room to spare. */
+    gap: 48px;
+}
+
+.sos {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(260px, 70vw);
+    aspect-ratio: 1;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 35%, var(--danger), var(--danger-deep));
+    color: #fff;
+    box-shadow:
+        0 0 0 12px color-mix(in srgb, var(--danger) 14%, transparent),
+        0 0 0 26px color-mix(in srgb, var(--danger) 7%, transparent),
+        0 18px 40px -12px color-mix(in srgb, var(--danger) 60%, transparent);
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.2s ease, filter 0.2s;
+}
+
+.sos-label {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.sos.is-holding {
+    transform: scale(0.95);
+}
+
+.sos:disabled {
+    cursor: not-allowed;
+    filter: grayscale(1) opacity(0.45);
+}
+
+.sos.is-sending {
+    filter: none;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.sos-ring {
+    position: absolute;
+    inset: -14px;
+    width: calc(100% + 28px);
+    height: calc(100% + 28px);
+    transform: rotate(-90deg);
+    pointer-events: none;
+}
+
+.sos-ring circle {
+    fill: none;
+    stroke: var(--text);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    opacity: 0;
+}
+
+.sos.is-holding .sos-ring circle,
+.sos.is-sending .sos-ring circle {
+    opacity: 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset var(--hold-ms, 1.5s) linear;
+}
+
+.sos-hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+@keyframes pulse {
+    50% {
+        transform: scale(0.97);
+    }
+}
+
+.codeword {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    margin: 0;
+}
+
+.codeword h2 {
+    font-size: 1rem;
+    font-weight: 650;
+}
+
+.codeword p {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.codeword p a {
+    color: inherit;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* Landing */
+
+.hero-title {
+    margin-top: 24px;
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.steps {
+    margin: 32px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.steps li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.steps h2 {
+    font-size: 1rem;
+    font-weight: 650;
+}
+
+.steps p {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.step-num {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--danger) 14%, var(--surface));
+    color: var(--danger);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* Preset */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.section-label {
+    margin-bottom: 12px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.sms-bubble {
+    display: inline-block;
+    max-width: 90%;
+    padding: 10px 14px;
+    border-radius: 18px 18px 18px 4px;
+    background: color-mix(in srgb, var(--muted) 16%, var(--surface));
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.sms-bubble + .contact-list {
+    margin-top: 16px;
+}
+
+.codeword-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.secret {
+    font: 600 1.1rem/1.4 ui-monospace, "SF Mono", Menlo, monospace;
+    letter-spacing: 0.08em;
+    overflow-wrap: anywhere;
+}
+
+.codeword-row .button {
+    min-height: 36px;
+    padding: 0 12px;
+}
+
+.contact-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.contact-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+}
+
+.contact-list li:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.contact-name {
+    font-weight: 600;
+}
+
+.contact-phone {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.legend-count {
+    margin-left: 6px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.contacts-error {
+    clear: both;
+    margin-bottom: 12px;
+}
+
+.contact-row {
+    clear: both;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+}
+
+.contact-row:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.contact-row[hidden] {
+    display: none;
+}
+
+.contact-fields {
+    flex: 1;
+    display: grid;
+    gap: 8px;
+}
+
+.contact-fields .field + .field {
+    margin-top: 0;
+}
+
+.contact-fields label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+}
+
+.icon-button {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 10px;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.icon-button:hover {
+    background: var(--bg);
+    color: var(--danger);
+}
+
+.icon-button svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.add-contact {
+    margin-top: 4px;
+    padding: 0;
+}
+
+.form-actions {
+    display: grid;
+    gap: 8px;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+}
+
+.page-lede {
+    margin: 4px 0 24px;
+    color: var(--muted);
+}
+
+.preset-form fieldset {
+    min-width: 0;
+}
+
+.preset-form legend {
+    float: left;
+    width: 100%;
+    margin-bottom: 12px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.field {
+    clear: both;
+    display: grid;
+    gap: 6px;
+}
+
+.field + .field {
+    margin-top: 16px;
+}
+
+.field label {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field textarea {
+    resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+    color: color-mix(in srgb, var(--muted) 70%, transparent);
+}
+
+.field input:focus,
+.field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.field-hint,
+.field-error {
+    font-size: 0.85rem;
+}
+
+.field-hint {
+    color: var(--muted);
+}
+
+.field-error {
+    color: var(--danger);
+}
+
+.has-error input,
+.has-error textarea {
+    border-color: var(--danger);
+}
+
+@media (min-width: 900px) {
+    .shell {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .topbar {
+        margin-bottom: 24px;
+    }
+
+    .columns {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+        align-items: start;
+    }
+
+    .columns > * + * {
+        margin-top: 0;
+    }
+
+    /* Home: SOS takes the left half, centered in the viewport. */
+    .home.columns {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        align-items: center;
+        gap: 48px;
+        min-height: calc(100vh - 200px);
+    }
+
+    .home:not(:has(.side)) {
+        grid-template-columns: 1fr;
+    }
+
+    .sos-panel {
+        gap: 40px;
+    }
+
+    .sos {
+        width: min(340px, 30vw);
+    }
+
+    .side .card:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Landing */
+    .landing.columns {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        align-items: center;
+        gap: 64px;
+        min-height: calc(100vh - 200px);
+    }
+
+    .hero-title {
+        margin-top: 0;
+        font-size: 3.5rem;
+    }
+
+    .hero .page-lede {
+        font-size: 1.15rem;
+        max-width: 32rem;
+    }
+
+    .hero-cta {
+        width: auto;
+        padding: 0 32px;
+    }
+
+    .steps {
+        margin: 0;
+    }
+
+    /* Preset pages */
+    .columns .contact-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .page-title {
+        font-size: 2.25rem;
+    }
+
+    .form-actions {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+        margin-top: 8px;
+    }
+
+    .form-actions .button-small {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 0.95rem;
+}
+
+.button-ghost:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    filter: none;
+}
+
+.card-header .button {
+    margin: -8px -12px 0 0;
+}
+
+.button-block {
+        width: auto;
+        min-width: 160px;
+        padding: 0 28px;
+    }
+
+    .narrow {
+        margin-top: 48px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    /* The hold ring is progress feedback, not decoration. */
+    .sos.is-holding .sos-ring circle {
+        transition-duration: var(--hold-ms, 1.5s) !important;
+    }
+}
+
+.nowrap {
+    white-space: nowrap;
+}

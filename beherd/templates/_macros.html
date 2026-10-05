@@ -1,0 +1,11 @@
+{% macro field(f, hint=None) %}
+<div class="field {{ 'has-error' if f.errors }}">
+    {{ f.label }}
+    {{ f(**kwargs) }}
+    {% if f.errors %}
+        <p class="field-error">{{ f.errors[0] }}</p>
+    {% elif hint %}
+        <p class="field-hint">{{ hint }}</p>
+    {% endif %}
+</div>
+{% endmacro %}

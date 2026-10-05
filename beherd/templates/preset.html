@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Your preset · BeHerd{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Your preset</h1>
+    <a class="button button-ghost button-small" href="{{ url_for('main.edit_preset') }}">Edit</a>
+</div>
+
+<div class="columns">
+    <div>
+        <section class="card">
+            <h2 class="section-label">What your contacts receive</h2>
+            <p class="sms-bubble">{{ preset.alert_body }}</p>
+        </section>
+
+        <section class="card">
+            <h2 class="section-label">Codeword</h2>
+            <div class="codeword-row">
+                <code class="secret" data-secret="{{ preset.codeword }}">{{ '•' * preset.codeword|length }}</code>
+                <button type="button" class="button button-ghost" data-reveal hidden>Show</button>
+            </div>
+            <p class="field-hint">Text it to <span class="nowrap">{{ config.TWILIO_NUM|phone if config.TWILIO_NUM else 'BeHerd' }}</span> from <span class="nowrap">{{ current_user.phone|phone }}</span>.</p>
+        </section>
+    </div>
+
+    <section class="card">
+        <h2 class="section-label">Emergency contacts</h2>
+        <ul class="contact-list">
+            {% for contact in preset.contacts %}
+                <li>
+                    <span class="contact-name">{{ contact.name or 'Contact %d'|format(loop.index) }}</span>
+                    <span class="contact-phone">{{ contact.phone|phone }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% endblock %}

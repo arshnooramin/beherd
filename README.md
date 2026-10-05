@@ -1,66 +1,95 @@
 # BeHerd
 
-Campus safety application powered by Twilio - [beherd.herokuapp.com](https://beherd.herokuapp.com/)
+[![CI](https://github.com/arshnooramin/beherd/actions/workflows/ci.yml/badge.svg)](https://github.com/arshnooramin/beherd/actions/workflows/ci.yml)
 
-## Purpose
-Safety and comfort are central to any thriving college community. BeHerd strives to push campuses to become safer by providing students a more flexible and accessible model of campus security. BeHerd allows students to control and ensure their safety from the comfort of their cell phones in a discrete and user-friendly manner.
+A campus safety app that alerts your emergency contacts by SMS, either by holding an SOS button or by texting a codeword to a Twilio number. 
 
-BeHerd is an award-wining ([Twilio Challenge 2021 Winner](http://management.blogs.bucknell.edu/2021/04/19/twilio-challenge-winners/)) web application built using [Flask](https://flask.palletsprojects.com/en/2.1.x/) and [Twilio API](https://www.twilio.com/).
+**Winner of the [2021 Twilio Hackathon](http://management.blogs.bucknell.edu/2021/04/19/twilio-challenge-winners/).**
 
-## Installation
-Given below are the instructions for setting up this project locally:
-* Clone this repository
-```
+<p>
+  <img src="https://github.com/user-attachments/assets/39d4d6cd-d926-4009-b01e-16cbb9ec160d" alt="Landing page" width="200">
+  <img src="https://github.com/user-attachments/assets/a63419c5-a8c3-48fb-a68b-13672635eeb1" alt="Home page with the SOS button" width="200">
+  <img src="https://github.com/user-attachments/assets/20823f2c-268f-43ec-8cd9-0fa17fcf33d9" alt="Preset summary" width="200">
+  <img src="https://github.com/user-attachments/assets/d7edcb03-4124-48d8-9c3c-b256f13f212d" alt="Editing a preset" width="200">
+</p>
+
+## How it works
+
+1. A user signs in with their phone number using a one-time code (Twilio Verify). There are no passwords.
+2. They set up a preset: their name, a codeword, an alert message, and 1–5 emergency contacts.
+3. The alert goes out to every contact in either of two ways:
+   - **SOS button**: holding the button on the home page sends it.
+   - **Codeword**: texting the codeword *from the phone they signed in with* to the BeHerd number sends it. Twilio forwards the text to the `/sms` webhook, which looks the user up by the sending number, checks the codeword, and replies to confirm.
+
+Built with Flask, SQLAlchemy, and Twilio.
+
+## Getting started
+
+Requires Python 3.10+.
+
+```sh
 git clone git@github.com:arshnooramin/beherd.git
 cd beherd
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt
+cp .env.sample .env  # set SECRET_KEY; MESSAGING_BACKEND=console needs nothing else
+flask --app beherd run --debug
 ```
-* Create a Python virtual environment and install dependencies
+
+With `MESSAGING_BACKEND=console`, no texts are sent: sign-in codes and alerts are printed in the server log instead, so you can run the whole app without a Twilio account.
+
+To send real texts, set `MESSAGING_BACKEND=twilio` and fill in the Twilio settings:
+
+| Variable | Description |
+| --- | --- |
+| `SECRET_KEY` | Flask secret key, used for sessions and CSRF protection |
+| `DATABASE_URL` | SQLAlchemy database URL. Defaults to SQLite at `instance/beherd.db` |
+| `MESSAGING_BACKEND` | `twilio` (default) or `console` |
+| `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` | Twilio API credentials |
+| `TWILIO_NUM` | Twilio phone number in E.164 format, e.g. `+15705550100` |
+| `TWILIO_VERIFY_SID` | SID of a [Twilio Verify](https://www.twilio.com/docs/verify) service, used for sign-in codes |
+| `DEFAULT_REGION` | Region for numbers entered without a country code. Defaults to `US` |
+
+To receive texts, set the Twilio number's incoming-message webhook to `POST https://<your-host>/sms`. Requests are rejected unless they carry a valid Twilio signature. For local development, expose your server with a tunnel such as [ngrok](https://ngrok.com/).
+
+Database tables are created on startup. There are no migrations yet; after a schema change, delete the database and let it be recreated.
+
+## Development
+
+```sh
+pytest        # run the tests
+black .       # format the code
 ```
-pip install virtualenv
-virtualenv venv
-source venv/bin/activate
-pip install -r requirements.txt
+
+CI runs both on every push and pull request; pull requests fail if the code isn't formatted with Black.
+
+## Project layout
+
 ```
-* Create a [Twilio Developer Account](https://www.twilio.com/try-twilio), set up a Twilio phone number, and get API credentials
-* Set up a SQL database and get URI and secret key (can be set up locally)
-* Create an `.env` file by copying `.env.sample`, add Twilio and database credentials to the `.env` file
-* Run web app on `localhost`
+beherd/
+  __init__.py   app factory
+  auth.py       phone sign-in with one-time codes
+  main.py       home page, SOS button, preset pages
+  sms.py        Twilio webhook for codeword texts
+  alerts.py     sending an alert to every contact
+  messaging.py  Twilio and console backends for texts and verification
+  models.py     User, Preset, Contact
+  forms.py, phone.py, config.py, extensions.py
+  templates/, static/
+tests/
 ```
-flask run
+
+## Deployment
+
+The app is a standard WSGI app, served in production with Gunicorn:
+
+```sh
+gunicorn "beherd:create_app()"
 ```
-* Configure Twilio phone number to make a POST request to Webhook URL
-<img src="https://twilio-cms-prod.s3.amazonaws.com/images/configure-webhook_RJaWU8n.width-800.png" alt="drawing" width="400"/>
 
-## Project Structure
-* **`static`**: Includes `style.css` for custom styling of the frontend of the web app. This project utilizes the [Bootstrap](https://getbootstrap.com/) CSS framework for most of its styling. stylesheets can be expanded or additional stylesheets can be added to change the look, feel, and responsiveness of the web app.
-* **`templates`**: includes *child* HTML for each route in the web app (`preset.html` for `/preset` and `home.html` for `/`) in addition to the *parent* HTML - `base.html` which the *child* HTML files inherit from. These can be edited to change the structure of the web app/pages or additional child templates can be added for new functionalities. For example, if authentication was being added to store user's presets, a new HTML would be required with a login form.
-* **`app.py`**: is the main Flask app containing instructions for web app routing, updating the database, and making requests to the Twilio API.
+## Known limitations
 
-## Usage Example
-Users can create personalized presets which include the following information:
-   * Name/Identifier to be sent in the message
-   * Codeword
-   * Custom coded message
-   * Emergency contacts (upto 2, support for more will be added)
-
-This can be accomplished by visiting the [**Change Presets** route/page](https://beherd.herokuapp.com/preset) on the web app.
-
-<img src="https://user-images.githubusercontent.com/38775985/165001173-9f33abd8-f67f-48be-821d-78cd7cd0d874.png" alt="drawing" width="200"/> <img src="https://user-images.githubusercontent.com/38775985/165001162-a8873e5d-9601-4065-88ba-ab9db1e768b3.png" alt="drawing" width="200"/>
-
-Once a preset has been saved the emergency/designated contacts can be reached by tapping the SOS button on the [**Home** route/page](https://beherd.herokuapp.com/) on the web app
-
-<img src="https://user-images.githubusercontent.com/38775985/165001178-7de208ae-5282-4181-bde1-e52db38b56d9.png" alt="drawing" width="200"/> <img src="https://user-images.githubusercontent.com/38775985/164998767-62369344-2747-4072-835d-3d5f301dc2dd.png" alt="drawing" width="200"/>
-
-**OR** by sending the preset codeword to the Twilio number as a text message
-
-<img src="https://user-images.githubusercontent.com/38775985/165001167-3112cf38-42e8-405a-977a-fada02ae485f.png" alt="drawing" width="200"/> <img src="https://user-images.githubusercontent.com/38775985/164998767-62369344-2747-4072-835d-3d5f301dc2dd.png" alt="drawing" width="200"/>
-
-## How It Works?
-The application has three main components: a **SQL database**, **Flask web app**, and **Twilio API**. Users created presets are stored on a SQL database. When a message is sent to the BeHerd Twilio number a POST request is made by Twilio to the web app’s server:
-```
-POST https://beherd.herokuapp.com/sms
-```
-Which then calls a Python function. The function retrieves data from the database and checks whether the text that was sent was a valid codeword. If a valid codeword was found, texts are sent to the designated contacts of the user with the set message via the Twilio Python module. The messages can also be triggered using the SOS button on the web app itself.
-
-<img src="https://user-images.githubusercontent.com/38775985/165004942-16a8733a-6239-4d81-bfaa-56e402d57e04.png" alt="drawing"/>
-
+- There is no rate limiting on sign-in codes or alerts beyond Twilio Verify's own limits.
+- Alerts don't include location.
+- There is no way to delete an account from the app.

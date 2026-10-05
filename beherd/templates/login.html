@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Sign in · BeHerd{% endblock %}
+
+{% block content %}
+<div class="narrow">
+    <h1 class="page-title">Sign in</h1>
+    <p class="page-lede">Enter your mobile number and we'll text you a code. New here? This creates your account.</p>
+
+    <form method="post" class="card" novalidate>
+        {{ form.hidden_tag() }}
+        {{ field(form.phone, "This is also the number you'll text your codeword from.", autocomplete="tel", inputmode="tel", placeholder="(570) 555-0100", autofocus=true) }}
+        {{ form.submit(class="button button-primary button-block") }}
+    </form>
+</div>
+{% endblock %}
